@@ -1,0 +1,14 @@
+extends layout
+
+block content 
+    h1 Members-only signup page
+    if(error)
+        p=error 
+    form(method='post' action='/signup')
+        input(type='text' name='firstName' placeholder='firstName') 
+        input(type='text' name='lastName' placeholder='lastName')
+        input(type='text' name='username' placeholder='username') 
+        input(type='password' name='password' placeholder='password')
+        input(type='password' name='confPassword' placeholder='confirm password')
+        input(type='submit' value='Sign up') 
+    a(href='/') login

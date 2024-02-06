@@ -1,0 +1,11 @@
+extends layout
+
+block content
+  h1 Members-only login page
+  if(error)
+    p=error 
+  form(method='post' action='/login')
+    input(type='text' name='username' placeholder='username') 
+    input(type='password' name='password' placeholder='password')
+    input(type='submit' value='Login') 
+  a(href='/signup') create an account

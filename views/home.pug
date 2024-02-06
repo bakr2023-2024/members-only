@@ -1,0 +1,86 @@
+head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+body
+    #navbar 
+        button#createPostBtn Create Post
+        button#toggleMemberBtn(data-type='member') Toggle Member Status
+        button#toggleAdminBtn(data-type='admin') Toggle Admin Status
+        a(href='/home/logout')
+            button#logoutBtn Logout
+    h3 welcome back #{name}
+    h1 posts
+    #postDialog(style="display:none")
+        if(error)
+            p=error
+        form#postForm
+            input(type='text' name='title' placeholder='title')
+            input(type='text' name='text' placeholder='text')
+            button(type='submit') Post
+            button(type='button' id='cancelBtn') Cancel
+    if(posts.length>0)
+        for post in posts 
+            .post(id=post._id)
+                .postHeader
+                    h3=post.title 
+                    if(isMember)
+                        h6=post.author.username
+                        h6=post.timestamp
+                    if(isAdmin)
+                        button(class='deletePostBtn' data-id=post._id) delete post
+                p=post.text
+    else 
+        p No posts, create a new post!
+    script(src='https://code.jquery.com/jquery-2.2.1.min.js', integrity='sha256-gvQgAFzTH6trSrAWoH1iPo9Xc96QxSZ3feW6kem+O00=', crossorigin='anonymous')
+    script.
+        $(()=>{
+        $('#createPostBtn').click(function(e){
+            $('#postDialog').show()
+        })
+        $('#cancelBtn').click(function(){
+            $('#postDialog').hide()
+        })
+        $('#toggleMemberBtn').click(function(){
+            const btn = $(this)
+            $.ajax({
+                type:'put',
+                url:"home/member",
+                data:$(this).serialize(),
+                success :function(res){
+                    location.reload()
+                }
+            })
+        })
+         $('#toggleAdminBtn').click(function(){
+            const btn = $(this)
+            $.ajax({
+                type:'put',
+                url:"home/admin",
+                data:$(this).serialize(),
+                success :function(res){
+                    location.reload()
+                }
+            })
+        })
+        $('.deletePostBtn').click(function(){
+            const postId = $(this).attr('data-id');
+            $.ajax({
+                type:"delete",
+                url:'home/'+postId,
+                success:function(res){
+                    location.reload()
+                }
+            })
+        })
+        $('#postForm').submit(function(e){
+            $.ajax({
+                type:'post',
+                url:'home',
+                data:$(this).serialize(),
+                success:function(res){
+                    $('#postDialog').hide()
+                    location.reload()
+                }
+            })
+        })
+        })
